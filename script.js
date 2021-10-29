@@ -3,11 +3,6 @@ const express = require('express');
 const server = express();
 server.use(express.json());
 
-// function verificarGanhador(simbolo) {}
-// function verificarEmpate() {}
-// function imprimirTabuleiro() {}
-// function realizarJogada(jogador, simbolo) {}
-
 let tabuleiro = [ 5 ][5];
 
 function main() {
