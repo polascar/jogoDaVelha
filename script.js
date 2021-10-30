@@ -3,87 +3,14 @@ const express = require('express');
 const server = express();
 server.use(express.json());
 
-let tabuleiro = [ 5 ][5];
-
-function main() {
-	let fimDeJogo = false,
-		ganhador = 0;
-
-	/**
-	 * Inicializa tabuleiro
-	 */
-
-	tabuleiro[0][1] = tabuleiro[0][3] = '|';
-	tabuleiro[1][0] = tabuleiro[1][2] = '_';
-	tabuleiro[1][4] = '_';
-	tabuleiro[2][1] = tabuleiro[2][3] = '|';
-	tabuleiro[3][0] = tabuleiro[3][2] = '_';
-	tabuleiro[3][4] = '_';
-	tabuleiro[4][1] = tabuleiro[4][3] = '|';
-	tabuleiro[1][1] = tabuleiro[1][3] = tabuleiro[3][1] = tabuleiro[3][3] = '.';
-
-	tabuleiro[0][0] = tabuleiro[0][2] = tabuleiro[0][4] = ' ';
-	tabuleiro[2][0] = tabuleiro[2][2] = tabuleiro[2][4] = ' ';
-	tabuleiro[4][0] = tabuleiro[4][2] = tabuleiro[4][4] = ' ';
-
-	console.log('Joga da Velha');
-	imprimirTabuleiro();
-
-	do {
-		/* Jogador 1 */
-		if (fimDeJogo == false) {
-			realizarJogada(1, 'x');
-
-			imprimirTabuleiro();
-
-			if (verificarGanhador('x') == true) {
-				ganhador = 1;
-				fimDeJogo = true;
-			} else if (verificarEmpate() == true) {
-				ganhador = 0;
-				fimDeJogo = true;
-			}
-		}
-
-		/* Jogador 2 */
-		if (fimDeJogo == false) {
-			realizarJogada(2, 'O');
-
-			imprimirTabuleiro();
-
-			if (verificarGanhador('O') == true) {
-				ganhador = 2;
-				fimDeJogo = true;
-			} else if (verificarEmpate() == true) {
-				ganhador = 0;
-				fimDeJogo = true;
-			}
-		}
-	} while (fimDeJogo == false);
-
-	if (ganhador == 1) {
-		console.log('Ganhador é o jogador 1');
-	} else if (ganhador == 2) {
-		console.log('Ganhador é o jogador 2');
-	} else {
-		console.log('Fim de jogo: Empatado.');
-	}
-}
-
-function imprimirTabuleiro() {
-	for (let y = 0; y < 5; y++) {
-		for (let x = 0; x < 5; x++) {
-			console.log('Tabuleiro: ', tabuleiro[y][x]);
-		}
-	}
-}
+// let tabuleiro = [ 5 ][5];
 
 function verificarEmpate() {
 	let contTotalJogadas = 0;
 
 	for (let y = 0; y < 5; y++) {
 		for (let x = 0; x < 5; x++) {
-			if (tabuleiro[y][x] != ' ') {
+			if (jogo[y][x] != ' ') {
 				contTotalJogadas++;
 			}
 		}
@@ -102,11 +29,11 @@ function verificarGanhador(simbolo) {
 		contDiagonalPrincipal = 0,
 		contDiagonalSecundaria = 0;
 
-	for (let y = 0; y < 5; y++) {
-		for (let x = 0; x < 5; x++) {
+	for (let y = 0; y < 3; y++) {
+		for (let x = 0; x < 3; x++) {
 			contLinha = 0;
 			contColuna = 0;
-			for (x = 0; x < 5; x++) {
+			for (x = 0; x < 3; x++) {
 				if (tabuleiro[y][x] == simbolo) {
 					contLinha++;
 				}
@@ -183,5 +110,60 @@ function verificarGanhador(simbolo) {
 				jogadaValida = true;
 			}
 		} while (jogadaValida == false);
+	}
+}
+
+function main() {
+	let fimDeJogo = false,
+		ganhador = 0;
+
+	const jogo = {
+		P11: null,
+		P12: null,
+		P13: null,
+
+		P21: null,
+		P22: null,
+		P23: null,
+
+		P31: null,
+		P32: null,
+		P33: null
+	};
+
+	do {
+		/* Jogador 1 */
+		if (fimDeJogo == false) {
+			realizarJogada(1, 'x');
+
+			if (verificarGanhador('x') == true) {
+				ganhador = 1;
+				fimDeJogo = true;
+			} else if (verificarEmpate() == true) {
+				ganhador = 0;
+				fimDeJogo = true;
+			}
+		}
+
+		/* Jogador 2 */
+		if (fimDeJogo == false) {
+			realizarJogada(2, 'O');
+
+			if (verificarGanhador('O') == true) {
+				ganhador = 2;
+				fimDeJogo = true;
+			} else if (verificarEmpate() == true) {
+				ganhador = 0;
+				fimDeJogo = true;
+			}
+		}
+	} while (fimDeJogo == false);
+
+	if (ganhador == 1) {
+		console.log('Ganhador é o jogador 1');
+	} else if (ganhador == 2) {
+		console.log('Ganhador é o jogador 2');
+	} else {
+		console.log('Fim de jogo: Empatado.');
 	}
 }
