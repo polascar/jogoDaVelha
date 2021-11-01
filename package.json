@@ -1,5 +1,5 @@
 {
-	"name": "jogoDaVelha",
+	"name": "jogo_da_velha",
 	"version": "1.0.0",
 	"description": "Este projeto é a simulação do Jogo da Velha. Enjoy!",
 	"main": "app.js",
