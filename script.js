@@ -1,169 +1,61 @@
-const { response } = require('express');
-const express = require('express');
-const server = express();
-server.use(express.json());
+import { json } from 'express';
 
-// let tabuleiro = [ 5 ][5];
-
-function verificarEmpate() {
-	let contTotalJogadas = 0;
-
-	for (let y = 0; y < 5; y++) {
-		for (let x = 0; x < 5; x++) {
-			if (jogo[y][x] != ' ') {
-				contTotalJogadas++;
-			}
-		}
-	}
-
-	if (contTotalJogadas == 25) {
-		return true;
-	} else {
-		return false;
+class StateError extends Error {
+	constructor(message) {
+		super(message);
 	}
 }
 
-function verificarGanhador(simbolo) {
-	let contLinha = 0,
-		contColuna = 0,
-		contDiagonalPrincipal = 0,
-		contDiagonalSecundaria = 0;
-
-	for (let y = 0; y < 3; y++) {
-		for (let x = 0; x < 3; x++) {
-			contLinha = 0;
-			contColuna = 0;
-			for (x = 0; x < 3; x++) {
-				if (tabuleiro[y][x] == simbolo) {
-					contLinha++;
-				}
-				if (tabuleiro[x][y] == simbolo) {
-					contColuna++;
-				}
-				if (y == x) {
-					if (tabuleiro[y][x] == simbolo) {
-						contDiagonalPrincipal;
-					}
-				}
-				if (y + x == 4) {
-					if (tabuleiro[y][x] == simbolo) {
-						contDiagonalSecundaria++;
-					}
-				}
-			}
-			if (contLinha == 3 || contColuna == 3 || contDiagonalPrincipal == 3 || contDiagonalSecundaria == 3) {
-				return true;
-			}
-		}
-		return false;
+class State {
+	constructor() {
+		this.state = {};
+		this.ultimoJogador = '';
 	}
 
-	function realizarJogada(jogador, simbolo) {
-		let linha = 0,
-			coluna = 0,
-			linhaJogada = 0,
-			colunaJogada = 0,
-			jogadaValida = false;
+	getStatus(posicao, simbolo) {
+		posicao = [ 'P11', 'P12', 'P13', 'P21', 'P22', 'P23', 'P31', 'P32', 'P33' ];
 
-		do {
-			console.log('Jogador 1', `${jogador}`, simbolo);
+		if (this.state[posicao] >= this.state[posicao]) {
+			console.log(`Empate`);
+		} else if (this.state[posicao] == simbolo && simbolo > 3) {
+			console.log(`Vencedor ${simbolo}`);
+		} else {
+			console.log(`Jogo em andamento`);
+		}
+	}
 
-			if (linhaJogada == 1 && colunaJogada == 1) {
-				linha = 0;
-				coluna = 0;
-			} else if (linhaJogada == 1 && colunaJogada == 2) {
-				linha = 0;
-				coluna = 2;
-			} else if (linhaJogada == 1 && colunaJogada == 3) {
-				linha = 0;
-				coluna = 4;
-			} else if (linhaJogada == 2 && colunaJogada == 1) {
-				linha = 2;
-				coluna = 0;
-			} else if (linhaJogada == 2 && colunaJogada == 2) {
-				linha = 2;
-				coluna = 2;
-			} else if (linhaJogada == 2 && colunaJogada == 3) {
-				linha = 2;
-				coluna = 4;
-			} else if (linhaJogada == 3 && colunaJogada == 1) {
-				linha = 4;
-				coluna = 0;
-			} else if (linhaJogada == 3 && colunaJogada == 2) {
-				linha = 4;
-				coluna = 2;
-			} else if (linhaJogada == 3 && colunaJogada == 3) {
-				linha = 4;
-				coluna = 4;
-			}
+	getGameState(posicao, simbolo) {
+		// posicao = { P11: P11, P12: P12, P13: P13, P21: P21, P22: P22, P23: P23, P31: P31, P32: P32, P33: P33 };
+		// if (posicao > posicao) {
+		// } else
+		if (![ 'P11', 'P12', 'P13', 'P21', 'P22', 'P23', 'P31', 'P32', 'P33' ].includes(this.state[posicao])) {
+			//posicao != posicao
+			console.log(`Posição inválida, envie apenas P11', 'P12', 'P13', 'P21', 'P22', 'P23', 'P31', 'P32', 'P33'`);
+		} else {
+			console.log(`Posição ${posicao} já utilizada, use outra posição.`);
+			// throw new StateError
+		}
+		// this.state;
+	}
 
-			if (
-				tabuleiro[linha][coluna] != '' ||
-				linhaJogada < 1 ||
-				linhaJogada > 3 ||
-				colunaJogada < 1 ||
-				colunaJogada > 3
-			) {
-				jogadaValida = false;
-			} else {
-				tabuleiro[linha][coluna] = simbolo;
-				jogadaValida = true;
-			}
-		} while (jogadaValida == false);
+	resetGameState() {
+		this.state = {};
+	}
+
+	setJogada(posicao, simbolo) {
+		if (![ 'O', 'X' ].includes(simbolo)) {
+			throw new StateError(`Símbolo inválido, envie 'O' ou 'X'`);
+		} else if (this.state[posicao]) {
+			throw new StateError(`Posição ${posicao} já existe, envie outra posição.`);
+		}
+		if (simbolo === this.ultimoJogador) {
+			throw new StateError(`O jogador '${simbolo}' já jogou, é a vez do próximo jogador.`);
+		}
+		this.state[posicao] = simbolo;
+		this.ultimoJogador = simbolo;
 	}
 }
 
-function main() {
-	let fimDeJogo = false,
-		ganhador = 0;
+const state = new State();
 
-	const jogo = {
-		P11: null,
-		P12: null,
-		P13: null,
-
-		P21: null,
-		P22: null,
-		P23: null,
-
-		P31: null,
-		P32: null,
-		P33: null
-	};
-
-	do {
-		/* Jogador 1 */
-		if (fimDeJogo == false) {
-			realizarJogada(1, 'x');
-
-			if (verificarGanhador('x') == true) {
-				ganhador = 1;
-				fimDeJogo = true;
-			} else if (verificarEmpate() == true) {
-				ganhador = 0;
-				fimDeJogo = true;
-			}
-		}
-
-		/* Jogador 2 */
-		if (fimDeJogo == false) {
-			realizarJogada(2, 'O');
-
-			if (verificarGanhador('O') == true) {
-				ganhador = 2;
-				fimDeJogo = true;
-			} else if (verificarEmpate() == true) {
-				ganhador = 0;
-				fimDeJogo = true;
-			}
-		}
-	} while (fimDeJogo == false);
-
-	if (ganhador == 1) {
-		console.log('Ganhador é o jogador 1');
-	} else if (ganhador == 2) {
-		console.log('Ganhador é o jogador 2');
-	} else {
-		console.log('Fim de jogo: Empatado.');
-	}
-}
+export { StateError, state };
