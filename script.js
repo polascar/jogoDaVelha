@@ -29,7 +29,7 @@ class State {
 	}
 
 	getGameState(posicao, simbolo) {
-		if (posicao) {
+		if (posicao && simbolo) {
 			return {
 				status: `O ${this.state.posicao} fez ${this.state.simbolo}.`
 			};
