@@ -10,32 +10,31 @@ class State {
 	constructor() {
 		this.state = {};
 		this.ultimoJogador = '';
+		this.jogada = {};
 	}
 
 	getStatus(posicao, simbolo) {
-		posicao = [ 'P11', 'P12', 'P13', 'P21', 'P22', 'P23', 'P31', 'P32', 'P33' ];
-
 		if (this.state[posicao] >= this.state[posicao]) {
-			console.log(`Empate`);
+			return {
+				status: `Empate, jogo encerrado.`
+			};
 		} else if (this.state[posicao] == simbolo && simbolo > 3) {
-			console.log(`Vencedor ${simbolo}`);
+			return {
+				status: `Vencedor ${simbolo}`
+			};
 		} else {
-			console.log(`Jogo em andamento`);
+			return {
+				status: `Jogo em andamento. ${posicao} ${simbolo}`
+			};
 		}
 	}
 
 	getGameState(posicao, simbolo) {
-		// posicao = { P11: P11, P12: P12, P13: P13, P21: P21, P22: P22, P23: P23, P31: P31, P32: P32, P33: P33 };
-		// if (posicao > posicao) {
-		// } else
-		if (![ 'P11', 'P12', 'P13', 'P21', 'P22', 'P23', 'P31', 'P32', 'P33' ].includes(this.state[posicao])) {
-			//posicao != posicao
-			console.log(`Posição inválida, envie apenas P11', 'P12', 'P13', 'P21', 'P22', 'P23', 'P31', 'P32', 'P33'`);
-		} else {
-			console.log(`Posição ${posicao} já utilizada, use outra posição.`);
-			// throw new StateError
+		if (posicao) {
+			return {
+				status: `O ${posicao} fez ${simbolo}.`
+			};
 		}
-		// this.state;
 	}
 
 	resetGameState() {
@@ -53,6 +52,14 @@ class State {
 		}
 		this.state[posicao] = simbolo;
 		this.ultimoJogador = simbolo;
+
+		if (![ 'P11', 'P12', 'P13', 'P21', 'P22', 'P23', 'P31', 'P32', 'P33' ].includes(posicao)) {
+			throw new StateError(
+				`Posição inválida, envie apenas P11', 'P12', 'P13', 'P21', 'P22', 'P23', 'P31', 'P32', 'P33'`
+			);
+		} else {
+			throw new StateError(`Posição ${posicao} já utilizada, use outra posição.`);
+		}
 	}
 }
 
