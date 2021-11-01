@@ -10,7 +10,6 @@ class State {
 	constructor() {
 		this.state = {};
 		this.ultimoJogador = '';
-		this.jogada = {};
 	}
 
 	getStatus(posicao, simbolo) {
@@ -24,7 +23,7 @@ class State {
 			};
 		} else {
 			return {
-				status: `Jogo em andamento. ${posicao} ${simbolo}`
+				status: `Jogo em andamento.`
 			};
 		}
 	}
@@ -32,9 +31,10 @@ class State {
 	getGameState(posicao, simbolo) {
 		if (posicao) {
 			return {
-				status: `O ${posicao} fez ${simbolo}.`
+				status: `O ${this.state.posicao} fez ${this.state.simbolo}.`
 			};
 		}
+		return this.state;
 	}
 
 	resetGameState() {

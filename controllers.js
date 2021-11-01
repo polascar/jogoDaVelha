@@ -17,8 +17,8 @@ export const jogada = async (req, res) => {
 		res.status(200).json({
 			status: 'ok',
 			data: {
-				jogada: req.body.posicao,
-				jogador: req.body.jogador
+				jogador: req.body.jogador,
+				jogada: req.body.posicao
 			}
 		});
 	} catch (error) {
